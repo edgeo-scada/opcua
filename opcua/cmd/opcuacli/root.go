@@ -47,7 +47,6 @@ func init() {
 	rootCmd.AddCommand(readCmd)
 	rootCmd.AddCommand(writeCmd)
 	rootCmd.AddCommand(subscribeCmd)
-	rootCmd.AddCommand(infoCmd)
 	rootCmd.AddCommand(discoveryCmd)
 	rootCmd.AddCommand(gencertCmd)
 	rootCmd.AddCommand(versionCmd)

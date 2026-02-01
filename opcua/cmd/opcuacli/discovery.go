@@ -260,3 +260,52 @@ func getSecurityPolicyShortName(uri string) string {
 		return uri
 	}
 }
+
+func getApplicationTypeName(t opcua.ApplicationType) string {
+	switch t {
+	case opcua.ApplicationTypeServer:
+		return "Server"
+	case opcua.ApplicationTypeClient:
+		return "Client"
+	case opcua.ApplicationTypeClientAndServer:
+		return "ClientAndServer"
+	case opcua.ApplicationTypeDiscoveryServer:
+		return "DiscoveryServer"
+	default:
+		return fmt.Sprintf("Unknown(%d)", t)
+	}
+}
+
+func getSecurityPolicyName(uri string) string {
+	switch uri {
+	case string(opcua.SecurityPolicyNone):
+		return "None"
+	case string(opcua.SecurityPolicyBasic128Rsa15):
+		return "Basic128Rsa15"
+	case string(opcua.SecurityPolicyBasic256):
+		return "Basic256"
+	case string(opcua.SecurityPolicyBasic256Sha256):
+		return "Basic256Sha256"
+	case string(opcua.SecurityPolicyAes128Sha256):
+		return "Aes128_Sha256_RsaOaep"
+	case string(opcua.SecurityPolicyAes256Sha256):
+		return "Aes256_Sha256_RsaPss"
+	default:
+		return uri
+	}
+}
+
+func getUserTokenTypeName(t opcua.UserTokenType) string {
+	switch t {
+	case opcua.UserTokenTypeAnonymous:
+		return "Anonymous"
+	case opcua.UserTokenTypeUserName:
+		return "UserName"
+	case opcua.UserTokenTypeCertificate:
+		return "Certificate"
+	case opcua.UserTokenTypeIssuedToken:
+		return "IssuedToken"
+	default:
+		return fmt.Sprintf("Unknown(%d)", t)
+	}
+}

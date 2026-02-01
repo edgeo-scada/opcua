@@ -71,9 +71,6 @@ opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
 # Subscribe with custom intervals
 opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000 --sample 250
 
-# Get server information
-opcuacli info -e opc.tcp://localhost:4840
-
 # Generate a client certificate for secure connections
 opcuacli gencert --cert client-cert.pem --key client-key.pem
 
@@ -294,19 +291,6 @@ Output format:
 [HH:MM:SS.mmm] <NodeID> = <Value>
 ```
 
-#### Info Command
-
-Get information about an OPC UA server.
-
-```bash
-opcuacli info -e opc.tcp://localhost:4840
-```
-
-Displays:
-- Server application information
-- Build info and status
-- Available namespaces
-
 #### Gencert Command
 
 Generate a self-signed X.509 certificate for OPC UA client authentication.
@@ -443,7 +427,6 @@ NodeIDs can be specified in standard OPC UA notation:
 │   │       ├── read.go       # Read command
 │   │       ├── write.go      # Write command
 │   │       ├── subscribe.go  # Subscribe command
-│   │       ├── info.go       # Info command
 │   │       ├── discovery.go  # Discovery command
 │   │       ├── gencert.go    # Certificate generation
 │   │       └── common.go     # Shared utilities
