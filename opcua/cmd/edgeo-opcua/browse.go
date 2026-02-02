@@ -15,9 +15,9 @@ var browseCmd = &cobra.Command{
 	Long: `Browse nodes in the OPC UA server address space.
 
 Examples:
-  opcuacli browse -e opc.tcp://localhost:4840
-  opcuacli browse -e opc.tcp://localhost:4840 -n "i=85"
-  opcuacli browse -e opc.tcp://localhost:4840 -n "ns=2;s=MyNode" -d forward`,
+  edgeo-opcua browse -e opc.tcp://localhost:4840
+  edgeo-opcua browse -e opc.tcp://localhost:4840 -n "i=85"
+  edgeo-opcua browse -e opc.tcp://localhost:4840 -n "ns=2;s=MyNode" -d forward`,
 	RunE: runBrowse,
 }
 

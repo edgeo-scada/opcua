@@ -12,6 +12,6 @@ var versionCmd = &cobra.Command{
 	Short: "Print the version number",
 	Run: func(cmd *cobra.Command, args []string) {
 		info := opcua.GetVersion()
-		fmt.Printf("opcuacli version %s\n", info.Version)
+		fmt.Printf("edgeo-opcua version %s\n", info.Version)
 	},
 }

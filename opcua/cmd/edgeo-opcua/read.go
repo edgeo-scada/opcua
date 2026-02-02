@@ -16,9 +16,9 @@ var readCmd = &cobra.Command{
 	Long: `Read attribute values from OPC UA nodes.
 
 Examples:
-  opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
-  opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -a Value
-  opcuacli read -e opc.tcp://localhost:4840 -n "i=2253" -n "i=2254"`,
+  edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+  edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -a Value
+  edgeo-opcua read -e opc.tcp://localhost:4840 -n "i=2253" -n "i=2254"`,
 	RunE: runRead,
 }
 

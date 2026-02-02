@@ -43,16 +43,16 @@ The generated certificate includes the required extensions for OPC UA:
 
 Examples:
   # Generate certificate with defaults
-  opcuacli gencert
+  edgeo-opcua gencert
 
   # Generate certificate with custom output paths
-  opcuacli gencert --cert ./my-cert.pem --key ./my-key.pem
+  edgeo-opcua gencert --cert ./my-cert.pem --key ./my-key.pem
 
   # Generate certificate with custom application URI
-  opcuacli gencert --app-uri "urn:mycompany:myapp:client"
+  edgeo-opcua gencert --app-uri "urn:mycompany:myapp:client"
 
   # Generate certificate valid for specific hostnames
-  opcuacli gencert --dns "localhost,myhost.local" --ip "127.0.0.1,192.168.1.100"`,
+  edgeo-opcua gencert --dns "localhost,myhost.local" --ip "127.0.0.1,192.168.1.100"`,
 	RunE: runGencert,
 }
 
@@ -231,7 +231,7 @@ func runGencert(cmd *cobra.Command, args []string) error {
 	fmt.Printf("  IP Addresses:    %v\n", ipAddresses)
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Printf("  opcuacli discovery -e <endpoint> -s Basic256Sha256 -m SignAndEncrypt --cert %s --key %s\n", certOutput, keyOutput)
+	fmt.Printf("  edgeo-opcua discovery -e <endpoint> -s Basic256Sha256 -m SignAndEncrypt --cert %s --key %s\n", certOutput, keyOutput)
 
 	return nil
 }

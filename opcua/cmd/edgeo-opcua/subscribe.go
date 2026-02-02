@@ -18,9 +18,9 @@ var subscribeCmd = &cobra.Command{
 	Long: `Subscribe to data changes on OPC UA nodes and print updates.
 
 Examples:
-  opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
-  opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000
-  opcuacli subscribe -e opc.tcp://localhost:4840 -n "i=2253" -n "i=2254" -s 250`,
+  edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+  edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000
+  edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "i=2253" -n "i=2254" -s 250`,
 	RunE: runSubscribe,
 }
 

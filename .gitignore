@@ -1,5 +1,6 @@
 # Binaries
-/opcuacli
+/edgeo-opcua
+bin/
 *.exe
 *.exe~
 *.dll

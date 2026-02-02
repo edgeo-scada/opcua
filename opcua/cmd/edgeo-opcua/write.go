@@ -17,9 +17,9 @@ var writeCmd = &cobra.Command{
 	Long: `Write values to OPC UA nodes.
 
 Examples:
-  opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;i=1" -v 42
-  opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -v 25.5 -T double
-  opcuacli write -e opc.tcp://localhost:4840 -n "i=1234" -v "Hello World" -T string`,
+  edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;i=1" -v 42
+  edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -v 25.5 -T double
+  edgeo-opcua write -e opc.tcp://localhost:4840 -n "i=1234" -v "Hello World" -T string`,
 	RunE: runWrite,
 }
 

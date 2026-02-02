@@ -16,14 +16,14 @@ var (
 )
 
 var rootCmd = &cobra.Command{
-	Use:   "opcuacli",
+	Use:   "edgeo-opcua",
 	Short: "OPC UA command line client",
 	Long: `A command line interface for OPC UA servers.
 
 Examples:
-  opcuacli browse -e opc.tcp://localhost:4840
-  opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
-  opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;i=1" -v 42`,
+  edgeo-opcua browse -e opc.tcp://localhost:4840
+  edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+  edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;i=1" -v 42`,
 }
 
 func init() {
