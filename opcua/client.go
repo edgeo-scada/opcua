@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/edgeo/drivers/opcua/internal/transport"
+	"github.com/edgeo-scada/opcua/internal/transport"
 )
 
 // Client is an OPC UA TCP client with support for automatic reconnection.

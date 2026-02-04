@@ -30,13 +30,13 @@ A comprehensive OPC UA client library and CLI tool written in Go.
 ### CLI Tool
 
 ```bash
-go install github.com/edgeo/drivers/opcua/cmd/opcuacli@latest
+go install github.com/edgeo-scada/opcua/cmd/opcuacli@latest
 ```
 
 ### Library
 
 ```bash
-go get github.com/edgeo/drivers/opcua
+go get github.com/edgeo-scada/opcua
 ```
 
 ## Quick Start
@@ -91,7 +91,7 @@ import (
     "log"
     "time"
 
-    "github.com/edgeo/drivers/opcua"
+    "github.com/edgeo-scada/opcua"
 )
 
 func main() {
@@ -442,7 +442,7 @@ NodeIDs can be specified in standard OPC UA notation:
 
 ```bash
 # Clone the repository
-git clone https://github.com/edgeo/drivers.git
+git clone https://github.com/edgeo-scada/opcua.git
 cd drivers/opcua
 
 # Build the CLI

@@ -292,7 +292,7 @@ import (
     "net/http"
     "time"
 
-    "github.com/edgeo/drivers/opcua"
+    "github.com/edgeo-scada/opcua"
     "github.com/prometheus/client_golang/prometheus/promhttp"
 )
 

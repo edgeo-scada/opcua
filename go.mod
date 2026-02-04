@@ -1,4 +1,4 @@
-module github.com/edgeo/drivers
+module github.com/edgeo-scada/opcua
 
 go 1.21
 

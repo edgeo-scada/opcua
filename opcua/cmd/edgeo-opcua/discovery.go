@@ -6,7 +6,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/edgeo/drivers/opcua"
+	"github.com/edgeo-scada/opcua"
 	"github.com/spf13/cobra"
 )
 

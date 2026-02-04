@@ -301,7 +301,7 @@ import (
     "syscall"
     "time"
 
-    "github.com/edgeo/drivers/opcua"
+    "github.com/edgeo-scada/opcua"
 )
 
 func main() {
