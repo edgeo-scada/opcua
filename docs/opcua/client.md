@@ -291,11 +291,3 @@ client, err := opcua.NewClient("localhost:4840",
     }),
 )
 ```
-ect(func(err error) {
-        fmt.Printf("Déconnecté: %v\n", err)
-    }),
-    opcua.WithOnSessionActivated(func() {
-        fmt.Println("Session activée!")
-    }),
-)
-```
