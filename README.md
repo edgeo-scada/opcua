@@ -16,7 +16,7 @@ A comprehensive OPC UA client library and CLI tool written in Go.
 - Subscription and monitored items support with real-time data change notifications
 - Connection pooling
 
-### CLI (`opcuacli`)
+### CLI (`edgeo-opcua`)
 
 - Browse address space
 - Read/write node values
@@ -30,13 +30,13 @@ A comprehensive OPC UA client library and CLI tool written in Go.
 ### CLI Tool
 
 ```bash
-go install github.com/edgeo-scada/opcua/cmd/opcuacli@latest
+go install github.com/edgeo-scada/opcua/cmd/edgeo-opcua@latest
 ```
 
 ### Library
 
 ```bash
-go get github.com/edgeo-scada/opcua
+go get github.com/edgeo-scada/opcua/opcua
 ```
 
 ## Quick Start
@@ -45,37 +45,37 @@ go get github.com/edgeo-scada/opcua
 
 ```bash
 # Discover server endpoints and security options
-opcuacli discovery -e opc.tcp://localhost:4840
+edgeo-opcua discovery -e opc.tcp://localhost:4840
 
 # Browse the address space from root
-opcuacli browse -e opc.tcp://localhost:4840
+edgeo-opcua browse -e opc.tcp://localhost:4840
 
 # Browse a specific node
-opcuacli browse -e opc.tcp://localhost:4840 -n "i=85"
+edgeo-opcua browse -e opc.tcp://localhost:4840 -n "i=85"
 
 # Read a node value
-opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
 
 # Read multiple nodes
-opcuacli read -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
+edgeo-opcua read -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
 
 # Write a value
-opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;i=1" --value 42
+edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;i=1" --value 42
 
 # Write with explicit type
-opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" --value 25.5 -T double
+edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" --value 25.5 -T double
 
 # Subscribe to data changes
-opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
 
 # Subscribe with custom intervals
-opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000 --sample 250
+edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000 --sample 250
 
 # Generate a client certificate for secure connections
-opcuacli gencert --cert client-cert.pem --key client-key.pem
+edgeo-opcua gencert --cert client-cert.pem --key client-key.pem
 
 # Connect with security
-opcuacli browse -e opc.tcp://localhost:4840 \
+edgeo-opcua browse -e opc.tcp://localhost:4840 \
   -s Basic256Sha256 -m SignAndEncrypt \
   --cert client-cert.pem --key client-key.pem
 ```
@@ -91,7 +91,7 @@ import (
     "log"
     "time"
 
-    "github.com/edgeo-scada/opcua"
+    "github.com/edgeo-scada/opcua/opcua"
 )
 
 func main() {
@@ -189,7 +189,7 @@ Discover OPC UA servers and endpoints.
 
 ```bash
 # Discover endpoints
-opcuacli discovery -e opc.tcp://localhost:4840
+edgeo-opcua discovery -e opc.tcp://localhost:4840
 ```
 
 Displays:
@@ -205,13 +205,13 @@ Browse the OPC UA address space.
 
 ```bash
 # Browse from root
-opcuacli browse -e opc.tcp://localhost:4840
+edgeo-opcua browse -e opc.tcp://localhost:4840
 
 # Browse a specific node
-opcuacli browse -e opc.tcp://localhost:4840 -n "i=85"
+edgeo-opcua browse -e opc.tcp://localhost:4840 -n "i=85"
 
 # Browse with direction
-opcuacli browse -e opc.tcp://localhost:4840 -n "ns=2;s=MyNode" -d inverse
+edgeo-opcua browse -e opc.tcp://localhost:4840 -n "ns=2;s=MyNode" -d inverse
 ```
 
 | Flag | Short | Description | Default |
@@ -226,13 +226,13 @@ Read attribute values from OPC UA nodes.
 
 ```bash
 # Read a single node
-opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;i=1"
 
 # Read multiple nodes
-opcuacli read -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
+edgeo-opcua read -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
 
 # Read a specific attribute
-opcuacli read -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -a DisplayName
+edgeo-opcua read -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -a DisplayName
 ```
 
 | Flag | Short | Description | Default |
@@ -248,13 +248,13 @@ Write values to OPC UA nodes.
 
 ```bash
 # Write an integer (auto-detected)
-opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;i=1" --value 42
+edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;i=1" --value 42
 
 # Write a double
-opcuacli write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" --value 25.5 -T double
+edgeo-opcua write -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" --value 25.5 -T double
 
 # Write a string
-opcuacli write -e opc.tcp://localhost:4840 -n "i=1234" --value "Hello World" -T string
+edgeo-opcua write -e opc.tcp://localhost:4840 -n "i=1234" --value "Hello World" -T string
 ```
 
 | Flag | Short | Description | Default |
@@ -271,13 +271,13 @@ Subscribe to data changes on OPC UA nodes.
 
 ```bash
 # Subscribe to a single node
-opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
+edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;i=1"
 
 # Subscribe to multiple nodes
-opcuacli subscribe -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
+edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "i=2258" -n "i=2259"
 
 # Subscribe with custom intervals
-opcuacli subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000 --sample 250
+edgeo-opcua subscribe -e opc.tcp://localhost:4840 -n "ns=2;s=Temperature" -i 1000 --sample 250
 ```
 
 | Flag | Short | Description | Default |
@@ -297,10 +297,10 @@ Generate a self-signed X.509 certificate for OPC UA client authentication.
 
 ```bash
 # Generate with defaults
-opcuacli gencert
+edgeo-opcua gencert
 
 # Customize certificate
-opcuacli gencert \
+edgeo-opcua gencert \
   --cert my-cert.pem \
   --key my-key.pem \
   --app-uri "urn:mycompany:myapp" \
@@ -357,13 +357,13 @@ opcuacli gencert \
 
 ```bash
 # 1. Generate a client certificate
-opcuacli gencert --cert client-cert.pem --key client-key.pem
+edgeo-opcua gencert --cert client-cert.pem --key client-key.pem
 
 # 2. Discover available secure endpoints
-opcuacli discovery -e opc.tcp://server:4840
+edgeo-opcua discovery -e opc.tcp://server:4840
 
 # 3. Connect with security
-opcuacli browse -e opc.tcp://server:4840 \
+edgeo-opcua browse -e opc.tcp://server:4840 \
   -s Basic256Sha256 \
   -m SignAndEncrypt \
   --cert client-cert.pem \
@@ -408,33 +408,36 @@ NodeIDs can be specified in standard OPC UA notation:
 
 ```
 .
-├── opcua/                    # OPC UA library (importable)
-│   ├── client.go             # Main client implementation
-│   ├── types.go              # Type definitions (NodeID, Variant, etc.)
-│   ├── services.go           # Service request/response types
-│   ├── protocol.go           # Protocol encoding/decoding
-│   ├── security.go           # Security and cryptography
-│   ├── options.go            # Client options
-│   ├── errors.go             # Error types
-│   ├── metrics.go            # Metrics collection
-│   ├── pool.go               # Connection pooling
-│   ├── server.go             # Server implementation
-│   ├── cmd/
-│   │   └── opcuacli/         # CLI application
-│   │       ├── main.go
-│   │       ├── root.go       # Root command and global flags
-│   │       ├── browse.go     # Browse command
-│   │       ├── read.go       # Read command
-│   │       ├── write.go      # Write command
-│   │       ├── subscribe.go  # Subscribe command
-│   │       ├── discovery.go  # Discovery command
-│   │       ├── gencert.go    # Certificate generation
-│   │       └── common.go     # Shared utilities
+├── cmd/
+│   └── edgeo-opcua/          # CLI application
+│       ├── main.go
+│       ├── root.go            # Root command and global flags
+│       ├── browse.go          # Browse command
+│       ├── read.go            # Read command
+│       ├── write.go           # Write command
+│       ├── subscribe.go       # Subscribe command
+│       ├── discovery.go       # Discovery command
+│       ├── gencert.go         # Certificate generation
+│       └── common.go          # Shared utilities
+├── opcua/                     # OPC UA library (importable)
+│   ├── client.go              # Main client implementation
+│   ├── types.go               # Type definitions (NodeID, Variant, etc.)
+│   ├── services.go            # Service request/response types
+│   ├── protocol.go            # Protocol encoding/decoding
+│   ├── security.go            # Security and cryptography
+│   ├── options.go             # Client options
+│   ├── errors.go              # Error types
+│   ├── metrics.go             # Metrics collection
+│   ├── pool.go                # Connection pooling
+│   ├── server.go              # Server implementation
 │   └── internal/
-│       └── transport/        # TCP transport layer
+│       └── transport/         # TCP transport layer
+├── examples/
+│   ├── client/main.go         # Client example
+│   └── server/main.go         # Server example
 ├── go.mod
 ├── go.sum
-├── go.work                   # Go workspace for local development
+├── Makefile
 └── README.md
 ```
 
@@ -443,13 +446,16 @@ NodeIDs can be specified in standard OPC UA notation:
 ```bash
 # Clone the repository
 git clone https://github.com/edgeo-scada/opcua.git
-cd drivers/opcua
+cd opcua
 
 # Build the CLI
-go build -o opcuacli ./opcua/cmd/opcuacli
+make build
+
+# Build for all platforms
+make build-all
 
 # Run tests
-go test ./opcua/...
+make test
 ```
 
 ## Tested Servers

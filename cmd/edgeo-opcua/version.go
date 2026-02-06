@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/edgeo-scada/opcua"
+	"github.com/edgeo-scada/opcua/opcua"
 	"github.com/spf13/cobra"
 )
 

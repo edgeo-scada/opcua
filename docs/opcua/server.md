@@ -1,20 +1,20 @@
-# Serveur OPC UA
+# OPC UA Server
 
-Le serveur OPC UA permet d'exposer des données et des services via le protocole OPC UA.
+The OPC UA server allows exposing data and services via the OPC UA protocol.
 
-## Création du serveur
+## Creating the Server
 
 ```go
 server, err := opcua.NewServer(
     opcua.WithServerEndpoint("opc.tcp://0.0.0.0:4840"),
-    opcua.WithServerName("Mon Serveur OPC UA"),
+    opcua.WithServerName("My OPC UA Server"),
 )
 if err != nil {
     log.Fatal(err)
 }
 ```
 
-## Options de configuration
+## Configuration Options
 
 ```go
 server, err := opcua.NewServer(
@@ -22,18 +22,18 @@ server, err := opcua.NewServer(
     opcua.WithServerEndpoint("opc.tcp://0.0.0.0:4840"),
 
     // Identification
-    opcua.WithServerName("Serveur de Production"),
+    opcua.WithServerName("Production Server"),
     opcua.WithServerURI("urn:example:server"),
     opcua.WithProductURI("urn:example:product"),
 
-    // Sécurité
+    // Security
     opcua.WithServerCertificate(cert, key),
     opcua.WithServerSecurityPolicies(
         opcua.SecurityPolicyNone,
         opcua.SecurityPolicyBasic256Sha256,
     ),
 
-    // Connexions
+    // Connections
     opcua.WithMaxConnections(100),
     opcua.WithMaxSessionsPerConnection(10),
 
@@ -42,9 +42,9 @@ server, err := opcua.NewServer(
 )
 ```
 
-## Démarrage du serveur
+## Starting the Server
 
-### Démarrage simple
+### Simple Start
 
 ```go
 if err := server.ListenAndServe(ctx); err != nil {
@@ -52,7 +52,7 @@ if err := server.ListenAndServe(ctx); err != nil {
 }
 ```
 
-### Avec gestion du signal
+### With Signal Handling
 
 ```go
 ctx, cancel := context.WithCancel(context.Background())
@@ -63,7 +63,7 @@ signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 
 go func() {
     <-sigCh
-    log.Println("Arrêt en cours...")
+    log.Println("Shutting down...")
     cancel()
 }()
 
@@ -72,12 +72,12 @@ if err := server.ListenAndServe(ctx); err != nil && err != context.Canceled {
 }
 ```
 
-## Gestion de l'espace d'adressage
+## Address Space Management
 
-### Ajouter des noeuds
+### Adding Nodes
 
 ```go
-// Ajouter une variable numérique
+// Add a numeric variable
 server.AddNode(
     opcua.NewNumericNodeID(2, 1),
     "Temperature",
@@ -85,7 +85,7 @@ server.AddNode(
     25.0,
 )
 
-// Ajouter une variable string
+// Add a string variable
 server.AddNode(
     opcua.NewNumericNodeID(2, 2),
     "Status",
@@ -93,13 +93,13 @@ server.AddNode(
     "Running",
 )
 
-// Ajouter avec options
+// Add with options
 server.AddNodeWithOptions(
     opcua.NewNumericNodeID(2, 3),
     &opcua.NodeOptions{
         BrowseName:   "Pressure",
-        DisplayName:  "Pression (bar)",
-        Description:  "Pression du système en bar",
+        DisplayName:  "Pressure (bar)",
+        Description:  "System pressure in bar",
         DataType:     opcua.TypeDouble,
         InitialValue: 1.0,
         AccessLevel:  opcua.AccessLevelReadWrite,
@@ -108,17 +108,17 @@ server.AddNodeWithOptions(
 )
 ```
 
-### Ajouter des dossiers
+### Adding Folders
 
 ```go
-// Créer un dossier
+// Create a folder
 server.AddFolder(
     opcua.NewNumericNodeID(2, 100),
     "Sensors",
     opcua.NewNumericNodeID(0, 85), // Parent: Objects folder
 )
 
-// Ajouter des variables dans le dossier
+// Add variables in the folder
 server.AddNodeToFolder(
     opcua.NewNumericNodeID(2, 101),
     "Temperature",
@@ -128,7 +128,7 @@ server.AddNodeToFolder(
 )
 ```
 
-### Ajouter des méthodes
+### Adding Methods
 
 ```go
 server.AddMethod(
@@ -152,15 +152,15 @@ server.AddMethod(
 )
 ```
 
-## Mise à jour des valeurs
+## Updating Values
 
-### Mise à jour simple
+### Simple Update
 
 ```go
 server.SetValue(opcua.NewNumericNodeID(2, 1), 27.5)
 ```
 
-### Mise à jour avec timestamp
+### Update with Timestamp
 
 ```go
 server.SetValueWithTimestamp(
@@ -170,7 +170,7 @@ server.SetValueWithTimestamp(
 )
 ```
 
-### Mise à jour avec statut
+### Update with Status
 
 ```go
 server.SetValueWithStatus(
@@ -181,52 +181,52 @@ server.SetValueWithStatus(
 )
 ```
 
-### Lecture de valeur
+### Reading a Value
 
 ```go
 value, err := server.GetValue(opcua.NewNumericNodeID(2, 1))
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("Valeur: %v\n", value)
+fmt.Printf("Value: %v\n", value)
 ```
 
-## Gestion des subscriptions
+## Subscription Management
 
-### Handler personnalisé
+### Custom Handler
 
 ```go
 server.SetSubscriptionHandler(func(sub *opcua.ServerSubscription, event opcua.SubscriptionEvent) {
     switch event.Type {
     case opcua.SubscriptionCreated:
-        log.Printf("Subscription créée: %d", sub.ID)
+        log.Printf("Subscription created: %d", sub.ID)
     case opcua.SubscriptionDeleted:
-        log.Printf("Subscription supprimée: %d", sub.ID)
+        log.Printf("Subscription deleted: %d", sub.ID)
     case opcua.MonitoredItemCreated:
-        log.Printf("MonitoredItem créé: %d pour noeud %s", event.ItemID, event.NodeID)
+        log.Printf("MonitoredItem created: %d for node %s", event.ItemID, event.NodeID)
     }
 })
 ```
 
-## Authentification
+## Authentication
 
-### Authentification personnalisée
+### Custom Authentication
 
 ```go
 server.SetAuthenticator(func(token opcua.UserIdentityToken) (bool, error) {
     switch t := token.(type) {
     case *opcua.AnonymousIdentityToken:
-        return true, nil // Autoriser anonyme
+        return true, nil // Allow anonymous
 
     case *opcua.UserNameIdentityToken:
-        // Vérifier les credentials
+        // Verify credentials
         if t.UserName == "admin" && t.Password == "secret" {
             return true, nil
         }
         return false, nil
 
     case *opcua.X509IdentityToken:
-        // Vérifier le certificat
+        // Verify certificate
         return verifyCertificate(t.Certificate)
 
     default:
@@ -235,11 +235,11 @@ server.SetAuthenticator(func(token opcua.UserIdentityToken) (bool, error) {
 })
 ```
 
-### Autorisation par noeud
+### Node-level Authorization
 
 ```go
 server.SetAccessController(func(session *opcua.ServerSession, nodeID opcua.NodeID, op opcua.Operation) bool {
-    // Vérifier les permissions
+    // Check permissions
     if op == opcua.OperationWrite {
         return session.HasRole("operator")
     }
@@ -247,20 +247,20 @@ server.SetAccessController(func(session *opcua.ServerSession, nodeID opcua.NodeI
 })
 ```
 
-## Métriques
+## Metrics
 
 ```go
 metrics := server.Metrics()
 
-fmt.Printf("Sessions actives: %d\n", metrics.ActiveSessions)
-fmt.Printf("Subscriptions actives: %d\n", metrics.ActiveSubscriptions)
+fmt.Printf("Active sessions: %d\n", metrics.ActiveSessions)
+fmt.Printf("Active subscriptions: %d\n", metrics.ActiveSubscriptions)
 fmt.Printf("MonitoredItems: %d\n", metrics.MonitoredItems)
-fmt.Printf("Requêtes totales: %d\n", metrics.RequestsTotal)
+fmt.Printf("Total requests: %d\n", metrics.RequestsTotal)
 ```
 
-## Historique
+## History
 
-### Activer l'historique
+### Enable History
 
 ```go
 server.AddNodeWithOptions(
@@ -273,11 +273,11 @@ server.AddNodeWithOptions(
     },
 )
 
-// Configurer le stockage de l'historique
+// Configure history storage
 server.SetHistoryStorage(myHistoryStore)
 ```
 
-### Interface de stockage
+### Storage Interface
 
 ```go
 type HistoryStorage interface {
@@ -287,7 +287,7 @@ type HistoryStorage interface {
 }
 ```
 
-## Exemple complet
+## Complete Example
 
 ```go
 package main
@@ -305,7 +305,7 @@ import (
 )
 
 func main() {
-    // Créer le serveur
+    // Create the server
     server, err := opcua.NewServer(
         opcua.WithServerEndpoint("opc.tcp://0.0.0.0:4840"),
         opcua.WithServerName("Demo Server"),
@@ -314,12 +314,12 @@ func main() {
         log.Fatal(err)
     }
 
-    // Ajouter des noeuds
+    // Add nodes
     server.AddNode(opcua.NewNumericNodeID(2, 1), "Temperature", opcua.TypeDouble, 25.0)
     server.AddNode(opcua.NewNumericNodeID(2, 2), "Pressure", opcua.TypeDouble, 1013.0)
     server.AddNode(opcua.NewNumericNodeID(2, 3), "Status", opcua.TypeString, "Running")
 
-    // Simuler des changements de valeur
+    // Simulate value changes
     go func() {
         ticker := time.NewTicker(time.Second)
         defer ticker.Stop()
@@ -330,7 +330,7 @@ func main() {
         }
     }()
 
-    // Gestion de l'arrêt
+    // Shutdown handling
     ctx, cancel := context.WithCancel(context.Background())
     defer cancel()
 
@@ -339,12 +339,12 @@ func main() {
 
     go func() {
         <-sigCh
-        log.Println("Arrêt...")
+        log.Println("Shutting down...")
         cancel()
     }()
 
-    // Démarrer
-    log.Println("Serveur OPC UA démarré sur :4840")
+    // Start
+    log.Println("OPC UA server started on :4840")
     if err := server.ListenAndServe(ctx); err != nil && err != context.Canceled {
         log.Fatal(err)
     }

@@ -1,8 +1,8 @@
-# Démarrage rapide
+# Getting Started
 
-## Prérequis
+## Prerequisites
 
-- Go 1.21 ou supérieur
+- Go 1.21 or higher
 
 ## Installation
 
@@ -10,9 +10,9 @@
 go get github.com/edgeo-scada/opcua
 ```
 
-## Client OPC UA
+## OPC UA Client
 
-### Connexion basique
+### Basic Connection
 
 ```go
 package main
@@ -27,7 +27,7 @@ import (
 )
 
 func main() {
-    // Créer le client
+    // Create the client
     client, err := opcua.NewClient("localhost:4840",
         opcua.WithEndpoint("opc.tcp://localhost:4840"),
         opcua.WithTimeout(10*time.Second),
@@ -37,7 +37,7 @@ func main() {
     }
     defer client.Close()
 
-    // Connexion et activation de session
+    // Connect and activate session
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
@@ -45,14 +45,14 @@ func main() {
         log.Fatal(err)
     }
 
-    fmt.Println("Connecté!")
+    fmt.Println("Connected!")
 }
 ```
 
-### Navigation dans l'espace d'adressage
+### Navigating the Address Space
 
 ```go
-// Naviguer depuis le noeud Objects (i=85)
+// Browse from the Objects node (i=85)
 refs, err := client.BrowseNode(ctx, opcua.NewNumericNodeID(0, 85), opcua.BrowseDirectionForward)
 if err != nil {
     log.Fatal(err)
@@ -63,17 +63,17 @@ for _, ref := range refs {
 }
 ```
 
-### Lecture de valeurs
+### Reading Values
 
 ```go
-// Lire une valeur unique
+// Read a single value
 value, err := client.ReadValue(ctx, opcua.NewNumericNodeID(2, 1))
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("Valeur: %v\n", value.Value)
+fmt.Printf("Value: %v\n", value.Value)
 
-// Lire plusieurs valeurs
+// Read multiple values
 results, err := client.Read(ctx, []opcua.ReadValueID{
     {NodeID: opcua.NewNumericNodeID(0, 2256), AttributeID: opcua.AttributeValue},
     {NodeID: opcua.NewNumericNodeID(0, 2258), AttributeID: opcua.AttributeValue},
@@ -82,14 +82,14 @@ if err != nil {
     log.Fatal(err)
 }
 for i, result := range results {
-    fmt.Printf("Résultat %d: %v\n", i, result.Value)
+    fmt.Printf("Result %d: %v\n", i, result.Value)
 }
 ```
 
-### Écriture de valeurs
+### Writing Values
 
 ```go
-// Écrire une valeur entière
+// Write an integer value
 err := client.WriteValue(ctx,
     opcua.NewNumericNodeID(2, 1),
     &opcua.Variant{Type: opcua.TypeInt32, Value: int32(42)},
@@ -98,7 +98,7 @@ if err != nil {
     log.Fatal(err)
 }
 
-// Écrire une valeur double
+// Write a double value
 err = client.WriteValue(ctx,
     opcua.NewStringNodeID(2, "Temperature"),
     &opcua.Variant{Type: opcua.TypeDouble, Value: 25.5},
@@ -111,34 +111,34 @@ if err != nil {
 ### Subscriptions
 
 ```go
-// Créer un abonnement
+// Create a subscription
 sub, err := client.CreateSubscription(ctx,
-    opcua.WithPublishingInterval(1000), // 1 seconde
+    opcua.WithPublishingInterval(1000), // 1 second
 )
 if err != nil {
     log.Fatal(err)
 }
 defer sub.Delete(ctx)
 
-// Créer des éléments surveillés
+// Create monitored items
 items, err := sub.CreateMonitoredItems(ctx, []opcua.ReadValueID{
     {NodeID: opcua.NewNumericNodeID(0, 2258), AttributeID: opcua.AttributeValue},
 })
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("Surveillance de %d éléments\n", len(items))
+fmt.Printf("Monitoring %d items\n", len(items))
 
-// Recevoir les notifications
+// Receive notifications
 for notif := range sub.Notifications() {
-    fmt.Printf("Changement: ClientHandle=%d, Valeur=%v\n",
+    fmt.Printf("Change: ClientHandle=%d, Value=%v\n",
         notif.ClientHandle, notif.Value.Value)
 }
 ```
 
-## Serveur OPC UA
+## OPC UA Server
 
-### Serveur basique
+### Basic Server
 
 ```go
 package main
@@ -154,20 +154,20 @@ import (
 )
 
 func main() {
-    // Créer le serveur
+    // Create the server
     server, err := opcua.NewServer(
         opcua.WithServerEndpoint("opc.tcp://localhost:4840"),
-        opcua.WithServerName("Mon Serveur OPC UA"),
+        opcua.WithServerName("My OPC UA Server"),
     )
     if err != nil {
         panic(err)
     }
 
-    // Ajouter des noeuds personnalisés
+    // Add custom nodes
     server.AddNode(opcua.NewNumericNodeID(2, 1), "Temperature", opcua.TypeDouble, 25.0)
     server.AddNode(opcua.NewNumericNodeID(2, 2), "Pressure", opcua.TypeDouble, 1013.25)
 
-    // Gestion de l'arrêt gracieux
+    // Graceful shutdown handling
     ctx, cancel := context.WithCancel(context.Background())
     defer cancel()
 
@@ -176,24 +176,24 @@ func main() {
 
     go func() {
         <-sigCh
-        fmt.Println("Arrêt...")
+        fmt.Println("Shutting down...")
         server.Close()
     }()
 
-    // Démarrer le serveur
-    fmt.Println("Serveur OPC UA sur :4840")
+    // Start the server
+    fmt.Println("OPC UA server on :4840")
     if err := server.ListenAndServe(ctx); err != nil {
-        fmt.Printf("Erreur: %v\n", err)
+        fmt.Printf("Error: %v\n", err)
     }
 }
 ```
 
-## Pool de connexions
+## Connection Pool
 
-Pour les applications à haute performance:
+For high-performance applications:
 
 ```go
-// Créer un pool
+// Create a pool
 pool, err := opcua.NewPool("localhost:4840",
     opcua.WithPoolSize(10),
     opcua.WithPoolMaxIdleTime(5*time.Minute),
@@ -206,7 +206,7 @@ if err != nil {
 }
 defer pool.Close()
 
-// Utiliser une connexion du pool
+// Get a connection from the pool
 client, err := pool.Get(ctx)
 if err != nil {
     log.Fatal(err)
@@ -217,42 +217,42 @@ results, err := client.Read(ctx, []opcua.ReadValueID{
 })
 // ...
 
-// Remettre la connexion dans le pool
+// Return the connection to the pool
 pool.Put(client)
 ```
 
-Ou avec retour automatique:
+Or with automatic return:
 
 ```go
 pc, err := pool.GetPooled(ctx)
 if err != nil {
     log.Fatal(err)
 }
-defer pc.Close() // Remet automatiquement dans le pool
+defer pc.Close() // Automatically returns to the pool
 
 results, err := pc.Read(ctx, []opcua.ReadValueID{...})
 ```
 
-## Format des NodeID
+## NodeID Format
 
-Les NodeIDs peuvent être spécifiés en notation standard OPC UA:
+NodeIDs can be specified in standard OPC UA notation:
 
-| Format | Exemple | Description |
+| Format | Example | Description |
 |--------|---------|-------------|
-| Numérique | `i=1234` | ID numérique dans namespace 0 |
-| Numérique avec namespace | `ns=2;i=1234` | ID numérique dans namespace 2 |
-| Chaîne | `s=MyNode` | ID chaîne dans namespace 0 |
-| Chaîne avec namespace | `ns=2;s=MyNode` | ID chaîne dans namespace 2 |
-| GUID | `g=A1234567-...` | ID GUID |
-| Opaque | `b=Base64...` | ID opaque (ByteString) |
+| Numeric | `i=1234` | Numeric ID in namespace 0 |
+| Numeric with namespace | `ns=2;i=1234` | Numeric ID in namespace 2 |
+| String | `s=MyNode` | String ID in namespace 0 |
+| String with namespace | `ns=2;s=MyNode` | String ID in namespace 2 |
+| GUID | `g=A1234567-...` | GUID ID |
+| Opaque | `b=Base64...` | Opaque ID (ByteString) |
 
-Dans le code Go:
+In Go code:
 
 ```go
-// NodeID numérique
+// Numeric NodeID
 nodeID1 := opcua.NewNumericNodeID(0, 85)      // i=85
 nodeID2 := opcua.NewNumericNodeID(2, 1234)    // ns=2;i=1234
 
-// NodeID chaîne
+// String NodeID
 nodeID3 := opcua.NewStringNodeID(2, "Temperature")  // ns=2;s=Temperature
 ```

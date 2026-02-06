@@ -1,23 +1,23 @@
 # Configuration
 
-Le client et le serveur OPC UA utilisent le pattern des options fonctionnelles pour la configuration.
+The OPC UA client and server use the functional options pattern for configuration.
 
-## Options du client
+## Client Options
 
-### Connexion
+### Connection
 
 ```go
-// Endpoint du serveur
+// Server endpoint
 opcua.WithEndpoint("opc.tcp://localhost:4840")
 
-// Timeout des opérations
+// Operation timeout
 opcua.WithTimeout(10 * time.Second)
 ```
 
-### Sécurité
+### Security
 
 ```go
-// Politique de sécurité
+// Security policy
 opcua.WithSecurityPolicy(opcua.SecurityPolicyNone)
 opcua.WithSecurityPolicy(opcua.SecurityPolicyBasic128Rsa15)
 opcua.WithSecurityPolicy(opcua.SecurityPolicyBasic256)
@@ -25,192 +25,192 @@ opcua.WithSecurityPolicy(opcua.SecurityPolicyBasic256Sha256)
 opcua.WithSecurityPolicy(opcua.SecurityPolicyAes128Sha256)
 opcua.WithSecurityPolicy(opcua.SecurityPolicyAes256Sha256)
 
-// Mode de sécurité
+// Security mode
 opcua.WithSecurityMode(opcua.MessageSecurityModeNone)
 opcua.WithSecurityMode(opcua.MessageSecurityModeSign)
 opcua.WithSecurityMode(opcua.MessageSecurityModeSignAndEncrypt)
 
-// Certificat client
+// Client certificate
 opcua.WithCertificate(certPEM, keyPEM)
 
-// Configuration TLS personnalisée
+// Custom TLS configuration
 opcua.WithTLSConfig(&tls.Config{...})
 ```
 
 ### Session
 
 ```go
-// Nom de la session
-opcua.WithSessionName("Mon Application")
+// Session name
+opcua.WithSessionName("My Application")
 
-// Timeout de la session
+// Session timeout
 opcua.WithSessionTimeout(time.Hour)
 ```
 
-### Authentification
+### Authentication
 
 ```go
-// Authentification anonyme (par défaut)
+// Anonymous authentication (default)
 opcua.WithAnonymousAuth()
 
-// Authentification par nom d'utilisateur/mot de passe
+// Username/password authentication
 opcua.WithUserPassword("user", "password")
 
-// Authentification par certificat
+// Certificate authentication
 opcua.WithCertificateAuth(userCert, userKey)
 ```
 
-### Reconnexion automatique
+### Automatic Reconnection
 
 ```go
-// Activer la reconnexion automatique
+// Enable automatic reconnection
 opcua.WithAutoReconnect(true)
 
-// Délai initial entre les tentatives
+// Initial delay between attempts
 opcua.WithReconnectBackoff(time.Second)
 
-// Délai maximum entre les tentatives
+// Maximum delay between attempts
 opcua.WithMaxReconnectTime(30 * time.Second)
 
-// Nombre maximum de tentatives
+// Maximum number of attempts
 opcua.WithMaxRetries(5)
 ```
 
 ### Application
 
 ```go
-// URI de l'application
+// Application URI
 opcua.WithApplicationURI("urn:my:app")
 
-// URI du produit
+// Product URI
 opcua.WithProductURI("urn:my:product")
 
-// Nom de l'application
-opcua.WithApplicationName("Mon Application")
+// Application name
+opcua.WithApplicationName("My Application")
 ```
 
 ### Logging
 
 ```go
-// Logger personnalisé
+// Custom logger
 opcua.WithLogger(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
 ```
 
 ### Callbacks
 
 ```go
-// Appelé lors de la connexion
+// Called on connection
 opcua.WithOnConnect(func() {
-    log.Println("Connecté")
+    log.Println("Connected")
 })
 
-// Appelé lors de la déconnexion
+// Called on disconnection
 opcua.WithOnDisconnect(func(err error) {
-    log.Printf("Déconnecté: %v", err)
+    log.Printf("Disconnected: %v", err)
 })
 
-// Appelé lors de l'activation de session
+// Called on session activation
 opcua.WithOnSessionActivated(func() {
-    log.Println("Session activée")
+    log.Println("Session activated")
 })
 
-// Appelé lors de la fermeture de session
+// Called on session close
 opcua.WithOnSessionClosed(func(err error) {
-    log.Printf("Session fermée: %v", err)
+    log.Printf("Session closed: %v", err)
 })
 ```
 
-## Valeurs par défaut
+## Default Values
 
-| Option | Valeur par défaut |
-|--------|-------------------|
-| Timeout | 30 secondes |
+| Option | Default Value |
+|--------|---------------|
+| Timeout | 30 seconds |
 | Security Policy | None |
 | Security Mode | None |
 | Session Name | "OPC UA Client Session" |
-| Session Timeout | 1 heure |
+| Session Timeout | 1 hour |
 | Auth Type | Anonymous |
 | Auto Reconnect | false |
-| Reconnect Backoff | 1 seconde |
-| Max Reconnect Time | 30 secondes |
+| Reconnect Backoff | 1 second |
+| Max Reconnect Time | 30 seconds |
 | Max Retries | 3 |
 | Pool Size | 5 |
 
-## Options de subscription
+## Subscription Options
 
 ```go
-// Intervalle de publication (ms)
+// Publishing interval (ms)
 opcua.WithPublishingInterval(1000)
 
-// Nombre de cycles de vie
+// Lifetime count
 opcua.WithLifetimeCount(10)
 
-// Nombre maximum de keep-alive
+// Max keep-alive count
 opcua.WithMaxKeepAliveCount(3)
 
-// Nombre maximum de notifications par publication
+// Max notifications per publish
 opcua.WithMaxNotifications(100)
 
-// Publication activée
+// Publishing enabled
 opcua.WithPublishingEnabled(true)
 
-// Priorité
+// Priority
 opcua.WithPriority(0)
 ```
 
-## Options des monitored items
+## Monitored Item Options
 
 ```go
-// Intervalle d'échantillonnage (ms)
+// Sampling interval (ms)
 opcua.WithSamplingInterval(250)
 
-// Mode de surveillance
+// Monitoring mode
 opcua.WithMonitoringMode(opcua.MonitoringModeReporting)
 
-// Taille de la file
+// Queue size
 opcua.WithQueueSize(10)
 
-// Supprimer les anciennes valeurs
+// Discard oldest
 opcua.WithDiscardOldest(true)
 ```
 
-## Options du pool
+## Pool Options
 
 ```go
-// Taille du pool
+// Pool size
 opcua.WithPoolSize(10)
 
-// Durée maximum d'inactivité
+// Maximum idle time
 opcua.WithPoolMaxIdleTime(5 * time.Minute)
 
-// Options du client pour les connexions du pool
+// Client options for pool connections
 opcua.WithPoolClientOptions(
     opcua.WithTimeout(10 * time.Second),
     opcua.WithAutoReconnect(true),
 )
 ```
 
-## Exemple complet
+## Complete Example
 
 ```go
 client, err := opcua.NewClient("localhost:4840",
-    // Connexion
+    // Connection
     opcua.WithEndpoint("opc.tcp://localhost:4840"),
     opcua.WithTimeout(10*time.Second),
 
-    // Sécurité
+    // Security
     opcua.WithSecurityPolicy(opcua.SecurityPolicyBasic256Sha256),
     opcua.WithSecurityMode(opcua.MessageSecurityModeSignAndEncrypt),
     opcua.WithCertificate(cert, key),
 
     // Session
-    opcua.WithSessionName("Application de Production"),
+    opcua.WithSessionName("Production Application"),
     opcua.WithSessionTimeout(2*time.Hour),
 
-    // Authentification
+    // Authentication
     opcua.WithUserPassword("operator", "secret"),
 
-    // Reconnexion
+    // Reconnection
     opcua.WithAutoReconnect(true),
     opcua.WithReconnectBackoff(2*time.Second),
     opcua.WithMaxReconnectTime(time.Minute),
@@ -219,7 +219,7 @@ client, err := opcua.NewClient("localhost:4840",
     // Application
     opcua.WithApplicationURI("urn:example:myapp"),
     opcua.WithProductURI("urn:example:product"),
-    opcua.WithApplicationName("Mon Application de Production"),
+    opcua.WithApplicationName("My Production Application"),
 
     // Logging
     opcua.WithLogger(productionLogger),

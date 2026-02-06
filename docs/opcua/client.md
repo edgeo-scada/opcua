@@ -1,8 +1,8 @@
-# Client OPC UA
+# OPC UA Client
 
-Le client OPC UA permet de se connecter à des serveurs OPC UA et d'effectuer des opérations de lecture, écriture, navigation et souscription.
+The OPC UA client allows connecting to OPC UA servers and performing read, write, browse, and subscription operations.
 
-## Création du client
+## Creating the Client
 
 ```go
 client, err := opcua.NewClient("localhost:4840",
@@ -15,29 +15,29 @@ if err != nil {
 defer client.Close()
 ```
 
-## Options de configuration
+## Configuration Options
 
-Voir [Configuration](./options) pour la liste complète des options.
+See [Configuration](./options) for the complete list of options.
 
 ```go
 client, err := opcua.NewClient("localhost:4840",
-    // Connexion
+    // Connection
     opcua.WithEndpoint("opc.tcp://localhost:4840"),
     opcua.WithTimeout(10*time.Second),
 
-    // Sécurité
+    // Security
     opcua.WithSecurityPolicy(opcua.SecurityPolicyBasic256Sha256),
     opcua.WithSecurityMode(opcua.MessageSecurityModeSignAndEncrypt),
     opcua.WithCertificate(cert, key),
 
     // Session
-    opcua.WithSessionName("Mon Application"),
+    opcua.WithSessionName("My Application"),
     opcua.WithSessionTimeout(time.Hour),
 
-    // Authentification
+    // Authentication
     opcua.WithUserPassword("user", "password"),
 
-    // Reconnexion automatique
+    // Automatic reconnection
     opcua.WithAutoReconnect(true),
     opcua.WithReconnectBackoff(time.Second),
     opcua.WithMaxReconnectTime(30*time.Second),
@@ -47,9 +47,9 @@ client, err := opcua.NewClient("localhost:4840",
 )
 ```
 
-## Connexion
+## Connection
 
-### Connexion simple (secure channel uniquement)
+### Simple Connection (secure channel only)
 
 ```go
 if err := client.Connect(ctx); err != nil {
@@ -57,7 +57,7 @@ if err := client.Connect(ctx); err != nil {
 }
 ```
 
-### Connexion avec session
+### Connection with Session
 
 ```go
 if err := client.ConnectAndActivateSession(ctx); err != nil {
@@ -65,34 +65,34 @@ if err := client.ConnectAndActivateSession(ctx); err != nil {
 }
 ```
 
-## État de connexion
+## Connection State
 
 ```go
-// Vérifier l'état
+// Check state
 state := client.State()
-fmt.Printf("État: %s\n", state)
+fmt.Printf("State: %s\n", state)
 
-// Vérifier si connecté
+// Check if connected
 if client.IsConnected() {
-    fmt.Println("Client connecté")
+    fmt.Println("Client connected")
 }
 
-// Vérifier si session active
+// Check if session is active
 if client.IsSessionActive() {
     fmt.Println("Session active")
 }
 ```
 
-États possibles:
-- `StateDisconnected` - Non connecté
-- `StateConnecting` - Connexion en cours
-- `StateConnected` - TCP connecté
-- `StateSecureChannelOpen` - Secure channel ouvert
-- `StateSessionActive` - Session activée
+Possible states:
+- `StateDisconnected` - Not connected
+- `StateConnecting` - Connecting
+- `StateConnected` - TCP connected
+- `StateSecureChannelOpen` - Secure channel open
+- `StateSessionActive` - Session activated
 
-## Navigation (Browse)
+## Browsing (Browse)
 
-### Naviguer un noeud
+### Browse a Node
 
 ```go
 refs, err := client.BrowseNode(ctx,
@@ -111,7 +111,7 @@ for _, ref := range refs {
 }
 ```
 
-### Navigation avancée
+### Advanced Browsing
 
 ```go
 results, err := client.Browse(ctx, []opcua.BrowseDescription{
@@ -120,7 +120,7 @@ results, err := client.Browse(ctx, []opcua.BrowseDescription{
         BrowseDirection: opcua.BrowseDirectionForward,
         IncludeSubtypes: true,
         NodeClassMask:   opcua.NodeClassVariable,
-        ResultMask:      0x3F, // Tous les champs
+        ResultMask:      0x3F, // All fields
     },
 })
 if err != nil {
@@ -128,24 +128,24 @@ if err != nil {
 }
 ```
 
-Directions disponibles:
-- `BrowseDirectionForward` - Enfants
+Available directions:
+- `BrowseDirectionForward` - Children
 - `BrowseDirectionInverse` - Parents
-- `BrowseDirectionBoth` - Les deux
+- `BrowseDirectionBoth` - Both
 
-## Lecture (Read)
+## Reading (Read)
 
-### Lire une valeur
+### Read a Value
 
 ```go
 value, err := client.ReadValue(ctx, opcua.NewNumericNodeID(2, 1))
 if err != nil {
     log.Fatal(err)
 }
-fmt.Printf("Valeur: %v (Type: %s)\n", value.Value.Value, value.Value.Type)
+fmt.Printf("Value: %v (Type: %s)\n", value.Value.Value, value.Value.Type)
 ```
 
-### Lire plusieurs attributs
+### Read Multiple Attributes
 
 ```go
 results, err := client.Read(ctx, []opcua.ReadValueID{
@@ -159,26 +159,26 @@ if err != nil {
 
 for i, result := range results {
     if result.StatusCode.IsBad() {
-        fmt.Printf("Erreur sur lecture %d: %s\n", i, result.StatusCode)
+        fmt.Printf("Error on read %d: %s\n", i, result.StatusCode)
     } else {
-        fmt.Printf("Résultat %d: %v\n", i, result.Value)
+        fmt.Printf("Result %d: %v\n", i, result.Value)
     }
 }
 ```
 
-Attributs disponibles:
-- `AttributeNodeID` - NodeID du noeud
-- `AttributeNodeClass` - Classe du noeud
-- `AttributeBrowseName` - Nom de navigation
-- `AttributeDisplayName` - Nom d'affichage
+Available attributes:
+- `AttributeNodeID` - Node's NodeID
+- `AttributeNodeClass` - Node class
+- `AttributeBrowseName` - Browse name
+- `AttributeDisplayName` - Display name
 - `AttributeDescription` - Description
-- `AttributeValue` - Valeur (pour les variables)
-- `AttributeDataType` - Type de données
-- `AttributeAccessLevel` - Niveau d'accès
+- `AttributeValue` - Value (for variables)
+- `AttributeDataType` - Data type
+- `AttributeAccessLevel` - Access level
 
-## Écriture (Write)
+## Writing (Write)
 
-### Écrire une valeur simple
+### Write a Simple Value
 
 ```go
 err := client.WriteValue(ctx,
@@ -190,7 +190,7 @@ if err != nil {
 }
 ```
 
-### Écrire plusieurs valeurs
+### Write Multiple Values
 
 ```go
 results, err := client.Write(ctx, []opcua.WriteValue{
@@ -211,12 +211,12 @@ if err != nil {
 
 for i, status := range results {
     if status.IsBad() {
-        fmt.Printf("Erreur sur écriture %d: %s\n", i, status)
+        fmt.Printf("Error on write %d: %s\n", i, status)
     }
 }
 ```
 
-Types supportés:
+Supported types:
 - `TypeBoolean` - bool
 - `TypeSByte`, `TypeByte` - int8, uint8
 - `TypeInt16`, `TypeUInt16` - int16, uint16
@@ -227,9 +227,9 @@ Types supportés:
 - `TypeDateTime` - time.Time
 - `TypeByteString` - []byte
 
-## Appel de méthodes (Call)
+## Method Calls (Call)
 
-### Appeler une méthode
+### Call a Method
 
 ```go
 outputs, err := client.CallMethod(ctx,
@@ -247,7 +247,7 @@ for i, output := range outputs {
 }
 ```
 
-## Découverte des endpoints
+## Endpoint Discovery
 
 ```go
 endpoints, err := client.GetEndpoints(ctx)
@@ -266,14 +266,14 @@ for _, ep := range endpoints {
 }
 ```
 
-## Métriques
+## Metrics
 
 ```go
 metrics := client.Metrics().Collect()
-fmt.Printf("Requêtes totales: %v\n", metrics["requests_total"])
-fmt.Printf("Requêtes réussies: %v\n", metrics["requests_success"])
-fmt.Printf("Requêtes en erreur: %v\n", metrics["requests_errors"])
-fmt.Printf("Reconnexions: %v\n", metrics["reconnections"])
+fmt.Printf("Total requests: %v\n", metrics["requests_total"])
+fmt.Printf("Successful requests: %v\n", metrics["requests_success"])
+fmt.Printf("Failed requests: %v\n", metrics["requests_errors"])
+fmt.Printf("Reconnections: %v\n", metrics["reconnections"])
 ```
 
 ## Callbacks
@@ -281,9 +281,17 @@ fmt.Printf("Reconnexions: %v\n", metrics["reconnections"])
 ```go
 client, err := opcua.NewClient("localhost:4840",
     opcua.WithOnConnect(func() {
-        fmt.Println("Connecté!")
+        fmt.Println("Connected!")
     }),
     opcua.WithOnDisconnect(func(err error) {
+        fmt.Printf("Disconnected: %v\n", err)
+    }),
+    opcua.WithOnSessionActivated(func() {
+        fmt.Println("Session activated!")
+    }),
+)
+```
+ect(func(err error) {
         fmt.Printf("Déconnecté: %v\n", err)
     }),
     opcua.WithOnSessionActivated(func() {

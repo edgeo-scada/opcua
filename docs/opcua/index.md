@@ -8,7 +8,7 @@ slug: /
 [![Go](https://img.shields.io/badge/go-1.21+-00ADD8.svg)](https://go.dev/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/edgeo-scada/opcua/blob/main/LICENSE)
 
-Une implementation Go complète du protocole OPC UA, avec client, serveur et pool de connexions.
+A complete Go implementation of the OPC UA protocol, with client, server, and connection pool.
 
 ## Installation
 
@@ -16,7 +16,7 @@ Une implementation Go complète du protocole OPC UA, avec client, serveur et poo
 go get github.com/edgeo-scada/opcua@v1.0.0
 ```
 
-Pour vérifier la version installée:
+To verify the installed version:
 
 ```go
 import "github.com/edgeo-scada/opcua"
@@ -27,34 +27,34 @@ func main() {
 }
 ```
 
-## Fonctionnalités
+## Features
 
-- **Client OPC UA** avec reconnexion automatique
-- **Serveur OPC UA** avec support multi-clients
-- **Pool de connexions** avec health checks
-- **Subscriptions** et monitored items
-- **Métriques** intégrées (latence, compteurs, histogrammes)
-- **Logging** structuré via `slog`
+- **OPC UA Client** with automatic reconnection
+- **OPC UA Server** with multi-client support
+- **Connection Pool** with health checks
+- **Subscriptions** and monitored items
+- **Built-in Metrics** (latency, counters, histograms)
+- **Structured Logging** via `slog`
 
-## Services OPC UA supportés
+## Supported OPC UA Services
 
 | Service | Description |
 |---------|-------------|
-| GetEndpoints | Découverte des endpoints disponibles |
-| CreateSession | Création d'une session |
-| ActivateSession | Activation d'une session |
-| CloseSession | Fermeture d'une session |
-| Browse | Navigation dans l'espace d'adressage |
-| BrowseNext | Continuation de la navigation |
-| Read | Lecture d'attributs de noeuds |
-| Write | Écriture d'attributs de noeuds |
-| Call | Appel de méthodes |
-| CreateSubscription | Création d'un abonnement |
-| CreateMonitoredItems | Création d'éléments surveillés |
-| DeleteSubscriptions | Suppression d'abonnements |
-| Publish | Réception des notifications |
+| GetEndpoints | Discover available endpoints |
+| CreateSession | Create a session |
+| ActivateSession | Activate a session |
+| CloseSession | Close a session |
+| Browse | Navigate the address space |
+| BrowseNext | Continue browsing |
+| Read | Read node attributes |
+| Write | Write node attributes |
+| Call | Call methods |
+| CreateSubscription | Create a subscription |
+| CreateMonitoredItems | Create monitored items |
+| DeleteSubscriptions | Delete subscriptions |
+| Publish | Receive notifications |
 
-## Exemple rapide
+## Quick Example
 
 ```go
 package main
@@ -68,7 +68,7 @@ import (
 )
 
 func main() {
-    // Créer un client
+    // Create a client
     client, err := opcua.NewClient("localhost:4840",
         opcua.WithEndpoint("opc.tcp://localhost:4840"),
         opcua.WithTimeout(10*time.Second),
@@ -79,46 +79,46 @@ func main() {
     }
     defer client.Close()
 
-    // Connexion et activation de session
+    // Connect and activate session
     ctx := context.Background()
     if err := client.ConnectAndActivateSession(ctx); err != nil {
         panic(err)
     }
 
-    // Lire une valeur
+    // Read a value
     results, err := client.Read(ctx, []opcua.ReadValueID{
         {NodeID: opcua.NewNumericNodeID(0, 2256), AttributeID: opcua.AttributeValue},
     })
     if err != nil {
         panic(err)
     }
-    fmt.Printf("Valeur: %v\n", results[0].Value)
+    fmt.Printf("Value: %v\n", results[0].Value)
 }
 ```
 
-## Structure du package
+## Package Structure
 
 ```
 opcua/
-├── client.go      # Client OPC UA
-├── server.go      # Serveur OPC UA
-├── pool.go        # Pool de connexions
-├── options.go     # Configuration fonctionnelle
-├── types.go       # Types et constantes
-├── errors.go      # Gestion des erreurs
-├── metrics.go     # Métriques et observabilité
-├── protocol.go    # Encodage/décodage du protocole
-├── services.go    # Services OPC UA (requêtes/réponses)
-└── version.go     # Informations de version
+├── client.go      # OPC UA Client
+├── server.go      # OPC UA Server
+├── pool.go        # Connection Pool
+├── options.go     # Functional Configuration
+├── types.go       # Types and Constants
+├── errors.go      # Error Handling
+├── metrics.go     # Metrics and Observability
+├── protocol.go    # Protocol Encoding/Decoding
+├── services.go    # OPC UA Services (requests/responses)
+└── version.go     # Version Information
 ```
 
-## Prochaines étapes
+## Next Steps
 
-- [Démarrage rapide](./getting-started)
-- [Documentation Client](./client)
-- [Documentation Serveur](./server)
-- [Pool de connexions](./pool)
+- [Getting Started](./getting-started)
+- [Client Documentation](./client)
+- [Server Documentation](./server)
+- [Connection Pool](./pool)
 - [Configuration](./options)
-- [Gestion des erreurs](./errors)
-- [Métriques](./metrics)
+- [Error Handling](./errors)
+- [Metrics](./metrics)
 - [Changelog](./changelog)

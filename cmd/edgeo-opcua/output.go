@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/edgeo-scada/opcua"
+	"github.com/edgeo-scada/opcua/opcua"
 )
 
 // parseEndpoint extracts the host:port from an OPC UA endpoint URL.

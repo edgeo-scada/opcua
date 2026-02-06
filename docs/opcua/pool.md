@@ -1,8 +1,8 @@
-# Pool de connexions
+# Connection Pool
 
-Le pool de connexions permet de gérer efficacement plusieurs connexions vers un serveur OPC UA pour les applications à haute performance.
+The connection pool allows efficient management of multiple connections to an OPC UA server for high-performance applications.
 
-## Création du pool
+## Creating the Pool
 
 ```go
 pool, err := opcua.NewPool("localhost:4840",
@@ -15,20 +15,20 @@ if err != nil {
 defer pool.Close()
 ```
 
-## Options de configuration
+## Configuration Options
 
 ```go
 pool, err := opcua.NewPool("localhost:4840",
-    // Taille du pool
+    // Pool size
     opcua.WithPoolSize(20),
 
-    // Durée d'inactivité maximale avant fermeture
+    // Maximum idle time before closing
     opcua.WithPoolMaxIdleTime(10*time.Minute),
 
-    // Intervalle de vérification de santé
+    // Health check interval
     opcua.WithPoolHealthCheckInterval(30*time.Second),
 
-    // Options passées à chaque client
+    // Options passed to each client
     opcua.WithPoolClientOptions(
         opcua.WithEndpoint("opc.tcp://localhost:4840"),
         opcua.WithTimeout(10*time.Second),
@@ -39,9 +39,9 @@ pool, err := opcua.NewPool("localhost:4840",
 )
 ```
 
-## Utilisation manuelle
+## Manual Usage
 
-### Obtenir une connexion
+### Getting a Connection
 
 ```go
 client, err := pool.Get(ctx)
@@ -49,16 +49,16 @@ if err != nil {
     log.Fatal(err)
 }
 
-// Utiliser le client
+// Use the client
 results, err := client.Read(ctx, []opcua.ReadValueID{
     {NodeID: opcua.NewNumericNodeID(2, 1), AttributeID: opcua.AttributeValue},
 })
 
-// Remettre dans le pool
+// Return to the pool
 pool.Put(client)
 ```
 
-### Gestion des erreurs
+### Error Handling
 
 ```go
 client, err := pool.Get(ctx)
@@ -68,7 +68,7 @@ if err != nil {
 
 results, err := client.Read(ctx, []opcua.ReadValueID{...})
 if err != nil {
-    // En cas d'erreur, marquer comme invalide
+    // On error, mark as invalid
     pool.Remove(client)
     return err
 }
@@ -76,18 +76,18 @@ if err != nil {
 pool.Put(client)
 ```
 
-## Utilisation avec retour automatique
+## Automatic Return Usage
 
-La méthode `GetPooled` retourne un wrapper qui remet automatiquement la connexion dans le pool:
+The `GetPooled` method returns a wrapper that automatically returns the connection to the pool:
 
 ```go
 pc, err := pool.GetPooled(ctx)
 if err != nil {
     log.Fatal(err)
 }
-defer pc.Close() // Remet automatiquement dans le pool
+defer pc.Close() // Automatically returns to the pool
 
-// Utiliser comme un client normal
+// Use like a normal client
 results, err := pc.Read(ctx, []opcua.ReadValueID{
     {NodeID: opcua.NewNumericNodeID(2, 1), AttributeID: opcua.AttributeValue},
 })
@@ -96,21 +96,21 @@ if err != nil {
 }
 ```
 
-## Métriques
+## Metrics
 
 ```go
 stats := pool.Stats()
 
-fmt.Printf("Connexions actives: %d\n", stats.ActiveConnections)
-fmt.Printf("Connexions idle: %d\n", stats.IdleConnections)
-fmt.Printf("Connexions totales: %d\n", stats.TotalConnections)
-fmt.Printf("Attentes en cours: %d\n", stats.WaitCount)
-fmt.Printf("Durée d'attente moyenne: %v\n", stats.AvgWaitTime)
+fmt.Printf("Active connections: %d\n", stats.ActiveConnections)
+fmt.Printf("Idle connections: %d\n", stats.IdleConnections)
+fmt.Printf("Total connections: %d\n", stats.TotalConnections)
+fmt.Printf("Pending waits: %d\n", stats.WaitCount)
+fmt.Printf("Average wait time: %v\n", stats.AvgWaitTime)
 ```
 
-## Health checks
+## Health Checks
 
-Le pool effectue automatiquement des vérifications de santé sur les connexions:
+The pool automatically performs health checks on connections:
 
 ```go
 pool, err := opcua.NewPool("localhost:4840",
@@ -120,56 +120,56 @@ pool, err := opcua.NewPool("localhost:4840",
 )
 ```
 
-Les connexions qui échouent aux health checks sont automatiquement retirées et remplacées.
+Connections that fail health checks are automatically removed and replaced.
 
-## Comportement du pool
+## Pool Behavior
 
-### Création à la demande
+### On-demand Creation
 
-Les connexions sont créées à la demande jusqu'à atteindre la taille maximale:
+Connections are created on demand up to the maximum size:
 
 ```go
-// Pool de 10 connexions max
+// Pool of 10 max connections
 pool, _ := opcua.NewPool("localhost:4840",
     opcua.WithPoolSize(10),
 )
 
-// Les connexions sont créées quand nécessaire
-client1, _ := pool.Get(ctx)  // Crée connexion 1
-client2, _ := pool.Get(ctx)  // Crée connexion 2
+// Connections are created when needed
+client1, _ := pool.Get(ctx)  // Creates connection 1
+client2, _ := pool.Get(ctx)  // Creates connection 2
 // ...
 ```
 
-### Attente si pool plein
+### Waiting When Pool is Full
 
-Si toutes les connexions sont utilisées, `Get` attend qu'une connexion soit disponible:
+If all connections are in use, `Get` waits for a connection to become available:
 
 ```go
-// Avec timeout
+// With timeout
 ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 defer cancel()
 
 client, err := pool.Get(ctx)
 if err == context.DeadlineExceeded {
-    log.Println("Timeout: pool saturé")
+    log.Println("Timeout: pool saturated")
 }
 ```
 
-### Fermeture des connexions idle
+### Closing Idle Connections
 
-Les connexions inactives sont fermées après `MaxIdleTime`:
+Inactive connections are closed after `MaxIdleTime`:
 
 ```go
 pool, _ := opcua.NewPool("localhost:4840",
     opcua.WithPoolMaxIdleTime(5*time.Minute),
 )
 
-// Après 5 minutes d'inactivité, les connexions idle sont fermées
+// After 5 minutes of inactivity, idle connections are closed
 ```
 
-## Patterns d'utilisation
+## Usage Patterns
 
-### Pattern Worker Pool
+### Worker Pool Pattern
 
 ```go
 func processItems(pool *opcua.Pool, items []Item) error {
@@ -206,7 +206,7 @@ func processItems(pool *opcua.Pool, items []Item) error {
 }
 ```
 
-### Pattern Rate Limiting
+### Rate Limiting Pattern
 
 ```go
 func readWithRateLimit(pool *opcua.Pool, nodeIDs []opcua.NodeID, rps int) error {
@@ -233,7 +233,7 @@ func readWithRateLimit(pool *opcua.Pool, nodeIDs []opcua.NodeID, rps int) error 
 }
 ```
 
-## Exemple complet
+## Complete Example
 
 ```go
 package main
@@ -249,7 +249,7 @@ import (
 )
 
 func main() {
-    // Créer le pool
+    // Create the pool
     pool, err := opcua.NewPool("localhost:4840",
         opcua.WithPoolSize(10),
         opcua.WithPoolMaxIdleTime(5*time.Minute),
@@ -263,7 +263,7 @@ func main() {
     }
     defer pool.Close()
 
-    // Simuler des lectures concurrentes
+    // Simulate concurrent reads
     var wg sync.WaitGroup
     nodeIDs := []opcua.NodeID{
         opcua.NewNumericNodeID(2, 1),
@@ -281,7 +281,7 @@ func main() {
 
             pc, err := pool.GetPooled(ctx)
             if err != nil {
-                log.Printf("Worker %d: erreur pool: %v", id, err)
+                log.Printf("Worker %d: pool error: %v", id, err)
                 return
             }
             defer pc.Close()
@@ -289,7 +289,7 @@ func main() {
             for _, nodeID := range nodeIDs {
                 value, err := pc.ReadValue(ctx, nodeID)
                 if err != nil {
-                    log.Printf("Worker %d: erreur lecture: %v", id, err)
+                    log.Printf("Worker %d: read error: %v", id, err)
                     continue
                 }
                 fmt.Printf("Worker %d: %v = %v\n", id, nodeID, value.Value)
@@ -299,10 +299,10 @@ func main() {
 
     wg.Wait()
 
-    // Afficher les stats
+    // Display stats
     stats := pool.Stats()
-    fmt.Printf("\nStatistiques du pool:\n")
-    fmt.Printf("  Actives: %d\n", stats.ActiveConnections)
+    fmt.Printf("\nPool statistics:\n")
+    fmt.Printf("  Active: %d\n", stats.ActiveConnections)
     fmt.Printf("  Idle: %d\n", stats.IdleConnections)
     fmt.Printf("  Total: %d\n", stats.TotalConnections)
 }
