@@ -20,7 +20,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/edgeo-scada/opcua/opcua"
+	"github.com/edgeo-scada/opcua"
 )
 
 // parseSecurityPolicy converts a string to SecurityPolicy

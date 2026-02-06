@@ -22,7 +22,7 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/edgeo-scada/opcua/opcua"
+	"github.com/edgeo-scada/opcua"
 )
 
 func main() {
